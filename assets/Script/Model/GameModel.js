@@ -9,9 +9,10 @@ export default class GameModel {
     this.lastPos = cc.v2(-1, -1);
     this.cellTypeNum = 5;
     this.cellCreateType = []; // 升成种类只在这个数组里面查找
+
   }
 
-  init(cellTypeNum) {
+  init(cellTypeNum, startLevel) {
     this.cells = [];
     this.setCellTypeNum(cellTypeNum || this.cellTypeNum);
     for (var i = 1; i <= GRID_WIDTH; i++) {
@@ -196,6 +197,9 @@ export default class GameModel {
       return [this.changeModels, this.effectsQueue];
     }
   }
+
+
+
   // 消除
   processCrush(checkPoint) {
     let cycleCount = 0;
