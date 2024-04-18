@@ -39,9 +39,15 @@ export default class LevelView extends cc.Component {
     }
 
     updateTime(time:number) {
+        if (this._totalTime == null) {
+            this._totalTime = this.node.getChildByName("totalTime").getComponent(cc.Label);
+        }
         this._totalTime.string = String(time);
     }
     updateStep (step:number) {
+        if (this._step === null) {
+            this._step = this.node.getChildByName("step").getComponent(cc.Label);
+        }
         this._step.string = String(step);
     }
     updateTarget(target) {
@@ -49,9 +55,8 @@ export default class LevelView extends cc.Component {
             this._target = this.node.getChildByName("target").getComponent(cc.Label);
         }
         this._target.string = "";
-        target.forEach((value, cellType) =>{
-            let cur_target =  String(cellType)+ ":"+ String(value[1]) + "/" + String(value[0]) + ";";
-            console.log("xxx cur_target:", cur_target);
+        target.forEach((target, cellType) =>{
+            let cur_target =  String(cellType)+ "-"+ String(target) + ";";
             this._target.string = this._target.string + cur_target;
         }
         )

@@ -4,9 +4,7 @@ import LevelView from "../View/LevelView";
 
 export default class LevelController extends cc.Component { 
    private _levelModel:LevelModel = null;
-   private _maxStep:number = 0;
    private _totalTime:number = 0;
-   private _levelTarget = new Map();
    init(levelview:LevelView, curLevel:number) {
        this._levelModel = new LevelModel(levelview);
        this.startNextLevel(curLevel);
@@ -20,14 +18,16 @@ export default class LevelController extends cc.Component {
            console.log("can not find level config, level:" + level);
            return -1;
        }
-       this._maxStep = config[0];
+       let maxStep = config[0];
        this._totalTime = config[1];
-       for (const celltype in config[2]) {
-           this._levelTarget.set(celltype, config[2][celltype]);
-       }
-       console.log("xxx Level:", level, " maxStep:", this._maxStep, " totalTime:", this._totalTime, " target:", this._levelTarget);
+       let  levelTarget = new Map();
 
-       this._levelModel.init(level, this._levelTarget);
+       for (const celltype in config[2]) {
+           levelTarget.set(celltype, config[2][celltype]);
+       }
+       console.log("Level:", level, " maxStep:", maxStep, " totalTime:", this._totalTime, " target:", this._levelTarget);
+
+       this._levelModel.init(level, levelTarget, maxStep);
    }
 
    onTick1S() {
@@ -39,15 +39,15 @@ export default class LevelController extends cc.Component {
    }
    
     checkNextStep() {
-        let nextStep = this._levelModel.getCurStep() + 1;
-        if (nextStep >= this._maxStep ) {
+        let curStep = this._levelModel.getCurStep();
+        if (curStep == 0) {
             return false;
         }
         return true;
     }
 
     onStepOne (changeModels) {
-        this._levelModel.addStep();
+        this._levelModel.subStep();
         let matchinfo = new Map();
         changeModels.forEach(models => {
             if (models.isDeath) {
@@ -71,11 +71,9 @@ export default class LevelController extends cc.Component {
         }
         ) 
         if (needCheck) {
-            /*
             if (this._levelModel.checkMatch()) {
                 this.onLevelSuccess();
             }
-            */
         }
     }
 
@@ -86,7 +84,6 @@ export default class LevelController extends cc.Component {
     }
 
     onLevelSuccess() {
-        console.log("level success");
         this.startNextLevel(this._levelModel.addLevel());
     }
 }

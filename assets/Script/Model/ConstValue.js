@@ -42,6 +42,6 @@ export const ANITIME = {
 
 export const LevelConfig = {
 //[level] -> step,totaltime,target(type,num)
-  [1]:[10,60,{3:10}],
-  [2]:[10,60,{1:10, 2:20}]
+  [1]:[3,60,{3:10}],
+  [2]:[10,120,{1:10, 2:20}]
 }

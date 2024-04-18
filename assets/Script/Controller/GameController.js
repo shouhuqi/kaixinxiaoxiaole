@@ -19,35 +19,27 @@ cc.Class({
     },
     audioSource: {
       type: cc.AudioSource
-    }
+    },
   },
-  _levelController : null,
-
+ 
   // use this for initialization
   onLoad: function () {
-    console.log("xxxxx on load start:", this.node.name);
-    console.log("xxxxxxxxxx: level",  this.level);    
-    console.log("xxxxxxxxxx: grid", this.grid);   
-
-
-   // let audioButton = this.node.parent.getChildByName('audioButton')
-    //audioButton.on('click', this.callback, this)
+    console.log("on load start:", this.node.name);
+    let audioButton = this.node.parent.getChildByName('audioButton')
+    audioButton.on('click', this.callback, this)
     this.gameModel = new GameModel();
     this.gameModel.init(4, 1);
     var gridScript = this.grid.getComponent("GridView");
-    console.log("xxxxx on load 1");
     gridScript.setController(this);
     gridScript.initWithCellModels(this.gameModel.getCells());
 
-    console.log("xxxxx on load 2");
     this._levelController = new LevelController();
     var levelView = this.level.getComponent("LevelView");
      
-    console.log("xxxxx on load 3");
     this._levelController.init(levelView, 1);
 
-    //this.audioSource = cc.find('Canvas/GameScene')._components[1].audio;
-    console.log("xxxx on load end", this.node.name);
+    this.audioSource = cc.find('Canvas/GameScene')._components[1].audio;
+    console.log(" on load end", this.node.name);
   },
 
   callback: function () {
@@ -59,7 +51,11 @@ cc.Class({
   selectCell: function (pos) {
     var result = this.gameModel.selectCell(pos);
     if (result[0].length > 0) {
-      this._levelController.onStepOne(result[0]);
+      if (this._levelController.checkNextStep()) {
+        this._levelController.onStepOne(result[0]);
+      } else {
+        this._levelController.onLevelFailed("maxStep"); 
+      }
     }
     return result;
   },
